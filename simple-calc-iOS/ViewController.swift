@@ -11,134 +11,140 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func number0(_ sender: UIButton) {
-        input.append("0")
-        update()
+        digitPress("0")
     }
     
     @IBAction func number1(_ sender: UIButton) {
-        update()
-        input.append("1")
-        update()
+        digitPress("1")
     }
     
     @IBAction func number2(_ sender: UIButton) {
-        input.append("2")
-        update()
+        digitPress("2")
     }
     
     @IBAction func number3(_ sender: UIButton) {
-        input.append("3")
-        update()
+        digitPress("3")
     }
     
     @IBAction func number4(_ sender: UIButton) {
-        input.append("4")
-        update()
+        digitPress("4")
     }
     
     @IBAction func number5(_ sender: UIButton) {
-        input.append("5")
-        update()
+        digitPress("5")
     }
     
     @IBAction func number6(_ sender: UIButton) {
-        input.append("6")
-        update()
+        digitPress("6")
     }
     
     @IBAction func number7(_ sender: UIButton) {
-        input.append("7")
-        update()
+        digitPress("7")
     }
     
     @IBAction func number8(_ sender: UIButton) {
-        input.append("8")
-        update()
+        digitPress("8")
     }
     
     @IBAction func number9(_ sender: UIButton) {
-        input.append("9")
-        update()
+        digitPress("9")
     }
     
     @IBAction func opAdd(_ sender: UIButton) {
-        input.append("+")
-        update()
+        opPress("+")
     }
     
     @IBAction func opSubtract(_ sender: UIButton) {
-        input.append("-")
-        update()
+        opPress("-")
     }
     
     @IBAction func opMultiply(_ sender: UIButton) {
-        input.append("×")
-        update()
+        opPress("×")
     }
     
     @IBAction func opDivide(_ sender: UIButton) {
-        input.append("÷")
-        update()
+        opPress("÷")
     }
     
     @IBAction func opModulus(_ sender: UIButton) {
-        input.append("%")
-        update()
+        opPress("%")
+    }
+    
+    @IBAction func countButton(_ sender: UIButton) {
+        opPress("count")
+    }
+    
+    @IBAction func avgButton(_ sender: UIButton) {
+        opPress("avg")
+    }
+    
+    @IBAction func factButton(_ sender: UIButton) {
+        operation = "fact"
+        display.text! += "fact"
+        opEquals(sender)
     }
     
     @IBAction func opEquals(_ sender: UIButton) {
+        addNum()
         calculate()
+        clear(sender)
     }
     
     @IBAction func clear(_ sender: UIButton) {
+        display.text = ""
         input.removeAll()
-        update()
     }
 
-    @IBAction func countButton(_ sender: UIButton) {
-        input.append("count")
-        clear(sender)
-    }
+
     
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var answerBox: UILabel!
     
-    private var input : [String] = []
-    private var operation : String = ""
+    private var digits : String = ""    // keeps track of digits that user enters one at a time
+    private var input : [Int] = []      // stores the numbers that the user has entered
+    private var operation : String = "" // stores the operation that the user has entered
     
-    private func update() {
-        var result = ""
-        for element in input {
-            result += element + " "
-        }
-        display.text = input.description
+    private func digitPress(_ num : String) {
+        digits += num
+        display.text! += num
     }
-
+    
+    private func opPress(_ op : String) {
+        addNum()
+        operation = op
+        display.text! += " " + op + " "
+    }
+    
+    // converts the multiple digits that the user has entered into a single integer
+    private func addNum() {
+        let num = Int(digits)
+        input.append(num!)
+        digits = ""
+    }
+    
     private func calculate() {
-        let last = input[input.count - 1]
         var result : Int
-        switch last {
+        switch operation {
         case "count":
-            result = input.count - 1
+            result = input.count
         case "avg":
             result = average()
         case "fact":
             result = factorial()
         default:
-            let num1 = Int(input[0])
-            let num2 = Int(input[2])
-            let symbol = input[1]
-            switch symbol {
+            let num1 = input[0]
+            let num2 = input[1]
+            switch operation {
             case "+":
-                result = num1! + num2!
+                result = num1 + num2
             case "-":
-                result = num1! - num2!
+                result = num1 - num2
             case "÷":
-                result = num1! / num2!
+                result = num1 / num2
             case "×":
-                result = num1! * num2!
+                result = num1 * num2
             default:    // symbol = "%" case
-                result = modulus(num1!, num2!)
+                result = modulus(num1, num2)
             }
         }
         answerBox.text = String(result)
@@ -154,11 +160,20 @@ class ViewController: UIViewController {
     }
     
     private func average() -> Int {
-        return 1
+        var sum = 0;
+        for num in input {
+            sum += num
+        }
+        return Int(sum / input.count)
     }
     
     private func factorial() -> Int {
-        return 1
+        let limit = input[0]
+        var result = 1
+        for num in 1...limit {
+            result *= num
+        }
+        return result
     }
 
     override func viewDidLoad() {
