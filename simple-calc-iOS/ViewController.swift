@@ -7,6 +7,7 @@
 //
 
 import UIKit
+public var history : [String] = [] // stores previous calculations
 
 class ViewController: UIViewController {
 
@@ -84,9 +85,13 @@ class ViewController: UIViewController {
         opEquals(sender)
     }
     
+    @IBAction func histButton(_ sender: UIButton) {
+    }
+    
     @IBAction func opEquals(_ sender: UIButton) {
         addNum()
         calculate()
+        addHistory()
         clear(sender)
     }
     
@@ -103,6 +108,10 @@ class ViewController: UIViewController {
     private var digits : String = ""    // keeps track of digits that user enters one at a time
     private var input : [Int] = []      // stores the numbers that the user has entered
     private var operation : String = "" // stores the operation that the user has entered
+    
+    private func addHistory() {
+        history.append(display.text! + " = " + answerBox.text!)
+    }
     
     private func digitPress(_ num : String) {
         digits += num
@@ -185,7 +194,5 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
 
